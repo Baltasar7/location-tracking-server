@@ -1,0 +1,5 @@
+# reject node_modules
+node_modules/
+
+# reject package-lock.json
+package-lock.json
