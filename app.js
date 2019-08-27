@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
   res.header('Content-Type', 'application/json; charset=utf-8');
   //res.json({ "searched_lat": "12.345", "searched_lon": "678.90" });
 
-  if(req.query.search_id_number === undefined) {
+  if(req.query.search_id_number === undefined || req.query.search_id_number === 'undefined') {
     res.json({ "searched_lat": "none", "searched_lon": "none" });
   }
   else
