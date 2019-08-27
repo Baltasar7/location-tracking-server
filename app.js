@@ -22,26 +22,45 @@ app.get('/', (req, res) => {
   res.header('Content-Type', 'application/json; charset=utf-8');
   //res.json({ "searched_lat": "12.345", "searched_lon": "678.90" });
 
-  let pool = pg.Pool({
-    database: 'location_tracking_service',
-    user: 'master',
-    password: 'misokatu',
-    host: 'localhost',
-    port: 5432,
-  });
-  pool.connect((err, client) => {
-    if(err) {
-      console.log(err);
-    }
-    else {
-      client.query(
-        'SELECT lat, lon FROM location WHERE location.id = req.body.sign_up_id_number',
-        (err, result) => {
-          res.json({ "searched_lat": result.rows[0].lat, "searched_lon": result.rows[0].lon });
-          console.log(result);
-      });
-    }
-  });
+  if(req.query.search_id_number === undefined) {
+    res.json({ "searched_lat": "none", "searched_lon": "none" });
+  }
+  else
+  {
+    let pool = pg.Pool({
+      database: 'location_tracking_service',
+      user: 'master',
+      password: 'misokatu',
+      host: 'localhost',
+      port: 5432,
+      idleTimeoutMillis: 15000,
+      connectionTimeoutMillis: 15000,
+    });
+    pool.connect((err, client) => {
+      if(err) {
+        console.log(err);
+      }
+      else {
+        client.query(
+          'SELECT lat, lon FROM location WHERE location.id = req.body.sign_up_id_number',
+          (err, result) => {
+            if(result.rowCount < 1) {
+              res.json({ "searched_lat": "undefined", "searched_lon": "undefined" });
+              console.log('id not registration');
+            }
+            else if (result.rowCount > 1) {
+              res.json({ "searched_lat": "multiple registration", "searched_lon": "multiple registration" });
+              console.log('id multiple registration');
+            }
+            else 
+            {
+              res.json({ "searched_lat": result.rows[0].lat, "searched_lon": result.rows[0].lon });
+              console.log(result);
+            }
+        });
+      }
+    });
+  }
 })
 
 app.post('/', upload.none(), (req, res) => {
