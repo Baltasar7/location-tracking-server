@@ -26,7 +26,8 @@ app.get('/', (req, res) => {
     database: 'location_tracking_service',
     user: 'master',
     password: 'misokatu',
-    host: 5432
+    host: 'localhost',
+    port: 5432,
   });
   pool.connect((err, client) => {
     if(err) {
