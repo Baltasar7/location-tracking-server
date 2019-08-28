@@ -3,3 +3,6 @@ node_modules/
 
 # reject package-lock.json
 package-lock.json
+
+# DB Dump
+location_tracking_service.dump
