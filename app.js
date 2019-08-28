@@ -53,16 +53,29 @@ app.get('/', (req, res) => {
         .query(fetch_latlon_query)
         .then(result => {
           if(result.rowCount < 1) {
-            res.json({ "searched_lat": "undefined", "searched_lon": "undefined" });
+            res.json({
+              "search_result": "検索失敗（ID登録なし)",
+              "searched_lat": "undefined",
+              "searched_lon": "undefined",
+            });
             console.log('id not registration');
           }
           else if (result.rowCount > 1) {
             res.json({ "searched_lat": "multiple registration", "searched_lon": "multiple registration" });
+            res.json({
+              "search_result": "検索失敗（ID複数登録)",
+              "searched_lat": "multiple registration",
+              "searched_lon": "multiple registration",
+            });
             console.log('id multiple registration');
           }
           else
           {
-            res.json({ "searched_lat": result.rows[0].lat, "searched_lon": result.rows[0].lon });
+            res.json({
+              "search_result": "検索成功",
+              "searched_lat": result.rows[0].lat,
+              "searched_lon": result.rows[0].lon,
+            });
             console.log(result);
           }
         })
