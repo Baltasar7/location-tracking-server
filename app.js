@@ -117,10 +117,10 @@ app.post('/', upload.none(), (req, res) => {
       }
       client
       .query(fetch_latlon_query)
-      .then(result => res.send('登録成功');)
+      .then(result => res.send('登録成功'))
       .catch(err => console.error(err.stack));
     }
-  });  
+  });
 })
 
 
