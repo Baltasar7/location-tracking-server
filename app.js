@@ -1,3 +1,5 @@
+'use strict'
+
 let express = require('express');
 //let bodyParser = require('body-parser');
 let multer = require('multer');
@@ -116,7 +118,7 @@ app.post('/', upload.none(), (req, res) => {
         values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
       }
       client
-      .query(fetch_latlon_query)
+      .query(insert_latlon_query)
       .then(result => res.send('登録成功'))
       .catch(err => console.error(err.stack));
     }
