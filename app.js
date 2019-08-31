@@ -34,10 +34,10 @@ app.get('/', (req, res) => {
   }
   else
   {
-    let pool = pg.Pool(db_config);
+    let pool = pg.Pool(JSON.parse(db_config));
     pool.connect((err, client) => {
       if(err) {
-        console.log(err);
+        console.log('connect:' + err);
       }
       else {
         console.log('db connect success!!');
@@ -89,10 +89,10 @@ app.post('/', upload.none(), (req, res) => {
   console.log('経度：' + req.body.sign_up_lon);
   res.header('Content-Type', 'text/plain; charset=utf-8');
 //  res.send('登録成功');
-  let pool = pg.Pool(db_config);
+  let pool = pg.Pool(JSON.parse(db_config));
   pool.connect((err, client) => {
     if(err) {
-      console.log(err);
+      console.log('connect:' + err);
     }
     else {
       console.log('db connect success!!');
