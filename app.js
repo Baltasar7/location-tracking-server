@@ -76,7 +76,8 @@ app.get('/', (req, res) => {
             console.log(result);
           }
         })
-        .catch(err => console.error(err.stack));
+        .catch(err => console.error(err.stack))
+        .finally(client.end());
       }
     });
   }
@@ -105,7 +106,8 @@ app.post('/', upload.none(), (req, res) => {
       client
       .query(insert_latlon_query)
       .then(result => res.send('登録成功'))
-      .catch(err => console.error(err.stack));
+      .catch(err => console.error(err.stack))
+      .finally(client.end());
     }
   });
 })
