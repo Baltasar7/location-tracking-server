@@ -46,7 +46,7 @@ app.get('/', (req, res) => {
           text: 'SELECT lat, lon FROM location WHERE id = $1',
           values: [req.query.search_id_number],
         }
-        client
+        pg_pool
         .query(fetch_latlon_query)
         .then(result => {
           if(result.rowCount < 1) {
@@ -102,7 +102,7 @@ app.post('/', upload.none(), (req, res) => {
         text: 'INSERT INTO location VALUES($1, $2, $3)',
         values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
       }
-      client
+      pg_pool
       .query(insert_latlon_query)
       .then(result => res.send('登録成功'))
       .catch(err => console.error(err.stack));
