@@ -3,9 +3,12 @@
 let express = require('express');
 //let bodyParser = require('body-parser');
 let multer = require('multer');
+let pg = require('pg');
+let fs = require('fs');
+
 let app = express();
 let upload = multer();
-let pg = require('pg');
+let db_config = fs.readFileSync('./config_herokupg.json', 'utf-8');
 
 let allowCrossDomain = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -31,16 +34,7 @@ app.get('/', (req, res) => {
   }
   else
   {
-    let pool = pg.Pool({
-      database: 'd97f1ck62lq4ko',
-      user: 'cxxsgxxqwfmkue',
-      password: '2c959b327cb7eed7e43a4abac9c7545b9b01bbc262e79aac16f829f25ab0f952',
-      host: 'ec2-107-20-155-148.compute-1.amazonaws.com',
-      port: 5432,
-      idleTimeoutMillis: 15000,
-      connectionTimeoutMillis: 15000,
-      ssl: true,
-    });
+    let pool = pg.Pool(db_config);
     pool.connect((err, client) => {
       if(err) {
         console.log(err);
@@ -64,7 +58,6 @@ app.get('/', (req, res) => {
             console.log('id not registration');
           }
           else if (result.rowCount > 1) {
-            res.json({ "searched_lat": "multiple registration", "searched_lon": "multiple registration" });
             res.json({
               "search_result": "検索失敗（ID複数登録)",
               "searched_lat": "multiple registration",
@@ -96,16 +89,7 @@ app.post('/', upload.none(), (req, res) => {
   console.log('経度：' + req.body.sign_up_lon);
   res.header('Content-Type', 'text/plain; charset=utf-8');
 //  res.send('登録成功');
-  let pool = pg.Pool({
-    database: 'd97f1ck62lq4ko',
-    user: 'cxxsgxxqwfmkue',
-    password: '2c959b327cb7eed7e43a4abac9c7545b9b01bbc262e79aac16f829f25ab0f952',
-    host: 'ec2-107-20-155-148.compute-1.amazonaws.com',
-    port: 5432,
-    idleTimeoutMillis: 15000,
-    connectionTimeoutMillis: 15000,
-    ssl: true,
-  });
+  let pool = pg.Pool(db_config);
   pool.connect((err, client) => {
     if(err) {
       console.log(err);
