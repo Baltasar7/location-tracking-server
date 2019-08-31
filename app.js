@@ -8,7 +8,6 @@ let fs = require('fs');
 
 let app = express();
 let upload = multer();
-let db_config = fs.readFileSync('./config_herokupg.json', 'utf-8');
 
 let allowCrossDomain = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -20,6 +19,9 @@ app.use(allowCrossDomain);
 // app.use(bodyParser.urlencoded({
 //   extended: true
 // }));
+
+let db_config = fs.readFileSync('./config_herokupg.json', 'utf-8');
+let client = new pg.Client(JSON.parse(db_config));
 
 
 app.get('/', (req, res) => {
@@ -34,13 +36,12 @@ app.get('/', (req, res) => {
   }
   else
   {
-    let pool = pg.Pool(JSON.parse(db_config));
-    pool.connect((err, client) => {
+    client.connect( err => {
       if(err) {
         console.log('connect:' + err);
       }
       else {
-        console.log('db connect success!!');
+        console.log('db connect success');
         const fetch_latlon_query = {
           name: 'fetch-latlon',
           text: 'SELECT lat, lon FROM location WHERE id = $1',
@@ -79,7 +80,7 @@ app.get('/', (req, res) => {
       }
     });
   }
-})
+});
 
 
 app.post('/', upload.none(), (req, res) => {
@@ -89,13 +90,13 @@ app.post('/', upload.none(), (req, res) => {
   console.log('経度：' + req.body.sign_up_lon);
   res.header('Content-Type', 'text/plain; charset=utf-8');
 //  res.send('登録成功');
-  let pool = pg.Pool(JSON.parse(db_config));
-  pool.connect((err, client) => {
+
+  client.connect(err => {
     if(err) {
       console.log('connect:' + err);
     }
     else {
-      console.log('db connect success!!');
+      console.log('db connect success');
       const insert_latlon_query = {
         name: 'insert-latlon',
         text: 'INSERT INTO location VALUES($1, $2, $3)',
