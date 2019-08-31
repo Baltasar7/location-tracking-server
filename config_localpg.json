@@ -3,8 +3,8 @@
   "user": "master",
   "password": "misokatu",
   "host": "localhost",
-  "port": 5432,
-  "idleTimeoutMillis": 15000,
-  "connectionTimeoutMillis": 15000,
-  "ssl": true
+  "port": "5432",
+  "idleTimeoutMillis": "15000",
+  "connectionTimeoutMillis": "15000",
+  "ssl": "true"
 }
