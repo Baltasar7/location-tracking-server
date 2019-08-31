@@ -19,8 +19,8 @@ app.use(allowCrossDomain);
 //   extended: true
 // }));
 
-let db_config = fs.readFileSync('./config_herokupg.json', 'utf-8');
-let client = pg.Client(JSON.parse(db_config));
+let pg_config = fs.readFileSync('./config_herokupg.json', 'utf-8');
+let pg_pool = new pg.Pool(JSON.parse(pg_config));
 
 
 app.get('/', (req, res) => {
@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
   }
   else
   {
-    client.connect( err => {
+    pg_pool.connect( err => {
       if(err) {
         console.log('db connect err:' + err);
       }
@@ -78,7 +78,7 @@ app.get('/', (req, res) => {
         .catch(err => console.error(err.stack));
       }
     });
-    client.end();
+    pg_pool.end();
   }
 });
 
@@ -91,7 +91,7 @@ app.post('/', upload.none(), (req, res) => {
   res.header('Content-Type', 'text/plain; charset=utf-8');
 //  res.send('登録成功');
 
-  client.connect(err => {
+  pg_pool.connect(err => {
     if(err) {
       console.log('db connect err:' + err);
     }
@@ -108,7 +108,7 @@ app.post('/', upload.none(), (req, res) => {
       .catch(err => console.error(err.stack));
     }
   });
-  client.end();
+  pg_pool.end();
 })
 
 
