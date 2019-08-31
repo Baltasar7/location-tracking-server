@@ -75,10 +75,10 @@ app.get('/', (req, res) => {
             console.log(result);
           }
         })
-        .catch(err => console.error(err.stack));
+        .catch(err => console.error(err.stack))
+        .finally(pg_pool.end());
       }
     });
-    pg_pool.end();
   }
 });
 
@@ -105,10 +105,10 @@ app.post('/', upload.none(), (req, res) => {
       pg_pool
       .query(insert_latlon_query)
       .then(result => res.send('登録成功'))
-      .catch(err => console.error(err.stack));
+      .catch(err => console.error(err.stack))
+      .finally(pg_pool.end());
     }
   });
-  pg_pool.end();
 })
 
 
