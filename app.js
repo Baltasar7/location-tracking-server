@@ -115,5 +115,5 @@ app.post('/', upload.none(), (req, res) => {
 const PORT = process.env.PORT || 1234;
 let server = app.listen(PORT, () => {
   console.log('Listen...');
-  console.log('db_config:' + db_config);
+  console.log('pg_config:' + pg_config);
 })
