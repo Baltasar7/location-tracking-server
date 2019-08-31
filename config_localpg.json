@@ -1,0 +1,10 @@
+{
+  "database": "location_tracking_service",
+  "user": "master",
+  "password": "misokatu",
+  "host": "localhost",
+  "port": 5432,
+  "idleTimeoutMillis": 15000,
+  "connectionTimeoutMillis": 15000,
+  "ssl": true
+}
