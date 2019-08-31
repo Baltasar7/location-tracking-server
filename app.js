@@ -15,13 +15,11 @@ let allowCrossDomain = (req, res, next) => {
   next();
 }
 app.use(allowCrossDomain);
-
 // app.use(bodyParser.urlencoded({
 //   extended: true
 // }));
 
 let db_config = fs.readFileSync('./config_herokupg.json', 'utf-8');
-let client = new pg.Client(JSON.parse(db_config));
 
 
 app.get('/', (req, res) => {
@@ -36,9 +34,10 @@ app.get('/', (req, res) => {
   }
   else
   {
+    let client = new pg.Client(JSON.parse(db_config));
     client.connect( err => {
       if(err) {
-        console.log('connect:' + err);
+        console.log('db connect err:' + err);
       }
       else {
         console.log('db connect success');
@@ -92,9 +91,10 @@ app.post('/', upload.none(), (req, res) => {
   res.header('Content-Type', 'text/plain; charset=utf-8');
 //  res.send('登録成功');
 
+  let client = new pg.Client(JSON.parse(db_config));
   client.connect(err => {
     if(err) {
-      console.log('connect:' + err);
+      console.log('db connect err:' + err);
     }
     else {
       console.log('db connect success');
