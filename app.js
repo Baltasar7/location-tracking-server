@@ -20,7 +20,7 @@ app.use(allowCrossDomain);
 // }));
 
 let pg_config = fs.readFileSync('./config_herokupg.json', 'utf-8');
-fs.close();
+
 
 app.get('/', (req, res) => {
   console.log('---GET Request---');
