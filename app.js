@@ -20,8 +20,7 @@ app.use(allowCrossDomain);
 // }));
 
 let pg_config = fs.readFileSync('./config_herokupg.json', 'utf-8');
-let pg_pool = new pg.Pool(JSON.parse(pg_config));
-
+fs.close();
 
 app.get('/', (req, res) => {
   console.log('---GET Request---');
@@ -35,6 +34,7 @@ app.get('/', (req, res) => {
   }
   else
   {
+    let pg_pool = new pg.Pool(JSON.parse(pg_config));
     pg_pool.connect( err => {
       if(err) {
         console.log('db connect err:' + err);
@@ -91,6 +91,7 @@ app.post('/', upload.none(), (req, res) => {
   res.header('Content-Type', 'text/plain; charset=utf-8');
 //  res.send('登録成功');
 
+  let pg_pool = new pg.Pool(JSON.parse(pg_config));
   pg_pool.connect(err => {
     if(err) {
       console.log('db connect err:' + err);
