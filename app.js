@@ -101,7 +101,7 @@ app.post('/', upload.none(), (req, res) => {
       console.log('db connect success');
 
       // Use async/await to arrange query execution order
-      ;(async () => { 
+      ;(async () => {
         let registed_count = 0;
         const count_query = {
           name: 'count',
@@ -134,14 +134,13 @@ app.post('/', upload.none(), (req, res) => {
             console.log('insert_latlon_query result:\n' + result);
             res.send('登録成功');
           })
-          .catch(err => console.error('insert_latlon_query err:\n' + err.stack))
-          .finally(pg_pool.end());
+          .catch(err => console.error('insert_latlon_query err:\n' + err.stack));
         }
         else {
           const update_latlon_query = {
             name: 'update-latlon',
-            text: 'UPDATE location SET lat = $2, lon = $3 WHERE id = $1',
-            values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
+            text: 'UPDATE location SET lat = $1, lon = $2 WHERE id = $3',
+            values: [req.body.sign_up_lat, req.body.sign_up_lon, req.body.sign_up_id_number],
           };
           await pg_pool
           .query(update_latlon_query)
@@ -149,13 +148,14 @@ app.post('/', upload.none(), (req, res) => {
             console.log('update_latlon_query result:\n' + result);
             res.send('更新成功');
           })
-          .catch(err => console.error('update_latlon_query err:\n' + err.stack))
-          .finally(pg_pool.end());
+          .catch(err => console.error('update_latlon_query err:\n' + err.stack));
         }
       })()
-      .catch(err => console.log('connect callback err:'  + err.stack));
+      .catch(err => console.log('query process err:'  + err.stack))
+      .finally(pg_pool.end());
     }
-  });
+  })
+  .chatc(err => console.log('connect err:'  + err.stack));
 });
 
 
