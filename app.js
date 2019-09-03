@@ -95,7 +95,6 @@ app.post('/', upload.none(), (req, res) => {
 //  res.send('登録成功');
 
   let pg_pool = new pg.Pool(JSON.parse(pg_config));
-  (async () => { 
     pg_pool.connect(err => {
     if(err) {
       console.log('db connect err:\n' + err);
@@ -103,59 +102,61 @@ app.post('/', upload.none(), (req, res) => {
     else {
       console.log('db connect success');
       
-      const registed_count = 0;
-      const count_query = {
-        name: 'count',
-        text: 'SELECT COUNT(*) FROM location WHERE id = $1',
-        values: [req.body.sign_up_id_number],
-      };
-      await pg_pool
-      .query(count_query)
-      .then(result => {
-        console.log('count_query result:\n' + result);
-        registed_count = result.rows[0];
-      })
-      .catch(err => {
-        console.error('count_query err:\n' + err.stack);
-        pg_pool.end();
-      });
-      console.log('registed_count:' + registed_count);
+      ;(async () => { 
+        const registed_count = 0;
+        const count_query = {
+          name: 'count',
+          text: 'SELECT COUNT(*) FROM location WHERE id = $1',
+          values: [req.body.sign_up_id_number],
+        };
+        await pg_pool
+        .query(count_query)
+        .then(result => {
+          console.log('count_query result:\n' + result);
+          registed_count = result.rows[0];
+        })
+        .catch(err => {
+          console.error('count_query err:\n' + err.stack);
+          pg_pool.end();
+        });
+        console.log('registed_count:' + registed_count);
 
-      if(registed_count < 1)
-      {
-        const insert_latlon_query = {
-          name: 'insert-latlon',
-          text: 'INSERT INTO location VALUES($1, $2, $3)',
-          values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
-        };
-        await pg_pool
-        .query(insert_latlon_query)
-        .then(result => {
-          console.log('insert_latlon_query result:\n' + result);
-          res.send('登録成功');
-        })
-        .catch(err => console.error('insert_latlon_query err:\n' + err.stack))
-        .finally(pg_pool.end());
-      }
-      else
-      {
-        const update_latlon_query = {
-          name: 'update-latlon',
-          text: 'UPDATE location SET lat = $2, lon = $3 WHERE id = $1',
-          values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
-        };
-        await pg_pool
-        .query(update_latlon_query)
-        .then(result => {
-          console.log('update_latlon_query result:\n' + result);
-          res.send('更新成功');
-        })
-        .catch(err => console.error('update_latlon_query err:\n' + err.stack))
-        .finally(pg_pool.end());
-      }
+        if(registed_count < 1)
+        {
+          const insert_latlon_query = {
+            name: 'insert-latlon',
+            text: 'INSERT INTO location VALUES($1, $2, $3)',
+            values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
+          };
+          await pg_pool
+          .query(insert_latlon_query)
+          .then(result => {
+            console.log('insert_latlon_query result:\n' + result);
+            res.send('登録成功');
+          })
+          .catch(err => console.error('insert_latlon_query err:\n' + err.stack))
+          .finally(pg_pool.end());
+        }
+        else
+        {
+          const update_latlon_query = {
+            name: 'update-latlon',
+            text: 'UPDATE location SET lat = $2, lon = $3 WHERE id = $1',
+            values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
+          };
+          await pg_pool
+          .query(update_latlon_query)
+          .then(result => {
+            console.log('update_latlon_query result:\n' + result);
+            res.send('更新成功');
+          })
+          .catch(err => console.error('update_latlon_query err:\n' + err.stack))
+          .finally(pg_pool.end());
+        }
+      })()
+      .catch(err => console.log('connect callback err:'  + err.stack));
     }
-  })})()
-  .catch(err => console.log('connect callback err:'  + err.stack))
+  })
 })
 
 
