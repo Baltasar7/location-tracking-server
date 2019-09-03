@@ -31,7 +31,6 @@ app.get('/', (req, res) => {
   console.log('---GET Request---');
   console.log('検索識別番号：' + req.query.search_id_number);
   res.header('Content-Type', 'application/json; charset=utf-8');
-  //res.json({ "searched_lat": "12.345", "searched_lon": "678.90" });
 
   if(req.query.search_id_number === undefined) {
     res.json({ "searched_lat": "none", "searched_lon": "none" });
@@ -77,7 +76,7 @@ app.get('/', (req, res) => {
               "searched_lat": result.rows[0].lat,
               "searched_lon": result.rows[0].lon,
             });
-            console.log(result);
+            console.log('検索成功');
           }
         })
         .catch(err => console.error(err.stack))
@@ -103,16 +102,47 @@ app.post('/', upload.none(), (req, res) => {
     }
     else {
       console.log('db connect success');
-      const insert_latlon_query = {
-        name: 'insert-latlon',
-        text: 'INSERT INTO location VALUES($1, $2, $3)',
-        values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
-      }
+      
+      const registed_count = 0;
+      const count_query = {
+        name: 'count',
+        text: 'SELECT COUNT(*) FROM location WHERE id = $1',
+        values: [req.body.sign_up_id_number],
+      };
       pg_pool
-      .query(insert_latlon_query)
-      .then(result => res.send('登録成功'))
-      .catch(err => console.error(err.stack))
-      .finally(pg_pool.end());
+      .query(count_query)
+      .then(result => registed_count = result.rows[0])
+      .catch(err => {
+        console.error(err.stack);
+        pg_pool.end();
+      });
+
+      if(registed_count < 1)
+      {
+        const insert_latlon_query = {
+          name: 'insert-latlon',
+          text: 'INSERT INTO location VALUES($1, $2, $3)',
+          values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
+        };
+        pg_pool
+        .query(insert_latlon_query)
+        .then(result => res.send('登録成功'))
+        .catch(err => console.error(err.stack))
+        .finally(pg_pool.end());
+        }
+        else
+        {
+          const update_latlon_query = {
+            name: 'update-latlon',
+            text: 'UPDATE location SET lat = $2, lon = $3 WHERE id = $1',
+            values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
+          };
+          pg_pool
+          .query(update_latlon_query)
+          .then(result => res.send('更新成功'))
+          .catch(err => console.error(err.stack))
+          .finally(pg_pool.end());
+        }
     }
   });
 })
