@@ -108,7 +108,7 @@ app.post('/', upload.none(), (req, res) => {
         text: 'SELECT COUNT(*) FROM location WHERE id = $1',
         values: [req.body.sign_up_id_number],
       };
-      pg_pool
+      await pg_pool
       .query(count_query)
       .then(result => {
         console.log('count_query result:\n' + result);
@@ -118,6 +118,7 @@ app.post('/', upload.none(), (req, res) => {
         console.error('count_query err:\n' + err.stack);
         pg_pool.end();
       });
+      console.log('registed_count:' + registed_count);
 
       if(registed_count < 1)
       {
