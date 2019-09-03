@@ -1,7 +1,6 @@
 'use strict'
 
-import 'dotenv.config'
-
+require('dotenv').config();
 let express = require('express');
 //let bodyParser = require('body-parser');
 let multer = require('multer');
