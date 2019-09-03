@@ -77,7 +77,10 @@ app.get('/', (req, res) => {
           }
         })
         .catch(err => console.error(err.stack))
-        .finally(pg_pool.end());
+        .finally(() => {
+          pg_pool.release();
+          pg_pool.end();
+        });
       }
     });
   }
@@ -148,10 +151,12 @@ app.post('/', upload.none(), (req, res) => {
         }
       })()
       .catch(err => console.log('query process err:'  + err.stack))
-      .finally(pg_pool.end());
-    }
+      .finally(() => {
+        pg_pool.release();
+        pg_pool.end();
+      });
+  }
   })
-  .catch(err => console.log('connect err:'  + err.stack));
 });
 
 
