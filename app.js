@@ -95,7 +95,8 @@ app.post('/', upload.none(), (req, res) => {
 //  res.send('登録成功');
 
   let pg_pool = new pg.Pool(JSON.parse(pg_config));
-  pg_pool.connect(err => {
+  (async () => { 
+    pg_pool.connect(err => {
     if(err) {
       console.log('db connect err:\n' + err);
     }
@@ -108,7 +109,7 @@ app.post('/', upload.none(), (req, res) => {
         text: 'SELECT COUNT(*) FROM location WHERE id = $1',
         values: [req.body.sign_up_id_number],
       };
-      pg_pool
+      await pg_pool
       .query(count_query)
       .then(result => {
         console.log('count_query result:\n' + result);
@@ -127,7 +128,7 @@ app.post('/', upload.none(), (req, res) => {
           text: 'INSERT INTO location VALUES($1, $2, $3)',
           values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
         };
-        pg_pool
+        await pg_pool
         .query(insert_latlon_query)
         .then(result => {
           console.log('insert_latlon_query result:\n' + result);
@@ -143,7 +144,7 @@ app.post('/', upload.none(), (req, res) => {
           text: 'UPDATE location SET lat = $2, lon = $3 WHERE id = $1',
           values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
         };
-        pg_pool
+        await pg_pool
         .query(update_latlon_query)
         .then(result => {
           console.log('update_latlon_query result:\n' + result);
@@ -153,7 +154,8 @@ app.post('/', upload.none(), (req, res) => {
         .finally(pg_pool.end());
       }
     }
-  });
+  })})()
+  .catch(err => console.log('connect callback err:'  + err.stack))
 })
 
 
