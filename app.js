@@ -108,7 +108,7 @@ app.post('/', upload.none(), (req, res) => {
         text: 'SELECT COUNT(*) FROM location WHERE id = $1',
         values: [req.body.sign_up_id_number],
       };
-      await pg_pool
+      pg_pool
       .query(count_query)
       .then(result => {
         console.log('count_query result:\n' + result);
