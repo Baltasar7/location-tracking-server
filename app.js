@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
     let pg_pool = new pg.Pool(JSON.parse(pg_config));
     pg_pool.connect( err => {
       if(err) {
-        console.log('db connect err:' + err);
+        console.log('db connect err:\n' + err);
       }
       else {
         console.log('db connect success');
@@ -53,29 +53,29 @@ app.get('/', (req, res) => {
         .query(fetch_latlon_query)
         .then(result => {
           if(result.rowCount < 1) {
+            console.log('id not registration');
             res.json({
               "search_result": "検索失敗（ID登録なし)",
               "searched_lat": "undefined",
               "searched_lon": "undefined",
             });
-            console.log('id not registration');
           }
           else if (result.rowCount > 1) {
+            console.log('id multiple registration');
             res.json({
               "search_result": "検索失敗（ID複数登録)",
               "searched_lat": "multiple registration",
               "searched_lon": "multiple registration",
             });
-            console.log('id multiple registration');
           }
           else
           {
+            console.log('検索成功');
             res.json({
               "search_result": "検索成功",
               "searched_lat": result.rows[0].lat,
               "searched_lon": result.rows[0].lon,
             });
-            console.log('検索成功');
           }
         })
         .catch(err => console.error(err.stack))
@@ -97,7 +97,7 @@ app.post('/', upload.none(), (req, res) => {
   let pg_pool = new pg.Pool(JSON.parse(pg_config));
   pg_pool.connect(err => {
     if(err) {
-      console.log('db connect err:' + err);
+      console.log('db connect err:\n' + err);
     }
     else {
       console.log('db connect success');
@@ -111,11 +111,11 @@ app.post('/', upload.none(), (req, res) => {
       pg_pool
       .query(count_query)
       .then(result => {
-        registed_count = result.rows[0];
         console.log('count_query result:\n' + result);
+        registed_count = result.rows[0];
       })
       .catch(err => {
-        console.error(err.stack);
+        console.error('count_query err:\n' + err.stack);
         pg_pool.end();
       });
 
@@ -129,10 +129,10 @@ app.post('/', upload.none(), (req, res) => {
         pg_pool
         .query(insert_latlon_query)
         .then(result => {
-          res.send('登録成功');
           console.log('insert_latlon_query result:\n' + result);
+          res.send('登録成功');
         })
-        .catch(err => console.error(err.stack))
+        .catch(err => console.error('insert_latlon_query err:\n' + err.stack))
         .finally(pg_pool.end());
       }
       else
@@ -145,10 +145,10 @@ app.post('/', upload.none(), (req, res) => {
         pg_pool
         .query(update_latlon_query)
         .then(result => {
-          res.send('更新成功');
           console.log('update_latlon_query result:\n' + result);
+          res.send('更新成功');
         })
-        .catch(err => console.error(err.stack))
+        .catch(err => console.error('update_latlon_query err:\n' + err.stack))
         .finally(pg_pool.end());
       }
     }
