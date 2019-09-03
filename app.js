@@ -151,7 +151,7 @@ app.post('/', upload.none(), (req, res) => {
       .finally(pg_pool.end());
     }
   })
-  .chatc(err => console.log('connect err:'  + err.stack));
+  .catch(err => console.log('connect err:'  + err.stack));
 });
 
 
