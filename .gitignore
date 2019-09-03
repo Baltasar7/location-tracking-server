@@ -10,5 +10,5 @@ location_tracking_service.dump
 
 
 # Memo
-# === skip-woktree files ===
+# === skip-worktree files ===
 # .env (Exec env discription)
