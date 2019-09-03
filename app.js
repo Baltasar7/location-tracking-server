@@ -35,8 +35,7 @@ app.get('/', (req, res) => {
     res.json({ "searched_lat": "none", "searched_lon": "none" });
     console.log('req.query.search_id_number is undefined...');
   }
-  else
-  {
+  else {
     let pg_pool = new pg.Pool(JSON.parse(pg_config));
     pg_pool.connect( err => {
       if(err) {
@@ -68,8 +67,7 @@ app.get('/', (req, res) => {
               "searched_lon": "multiple registration",
             });
           }
-          else
-          {
+          else {
             console.log('検索成功');
             res.json({
               "search_result": "検索成功",
@@ -95,16 +93,16 @@ app.post('/', upload.none(), (req, res) => {
 //  res.send('登録成功');
 
   let pg_pool = new pg.Pool(JSON.parse(pg_config));
-    pg_pool.connect(err => {
+  pg_pool.connect(err => {
     if(err) {
       console.log('db connect err:\n' + err);
     }
     else {
       console.log('db connect success');
-      
+
       // Use async/await to arrange query execution order
       ;(async () => { 
-        const registed_count = 0;
+        let registed_count = 0;
         const count_query = {
           name: 'count',
           //text: 'SELECT COUNT(*) FROM location WHERE id = $1',
@@ -121,11 +119,11 @@ app.post('/', upload.none(), (req, res) => {
         .catch(err => {
           console.error('count_query err:\n' + err.stack);
           pg_pool.end();
+          break;
         });
         console.log('registed_count:' + registed_count);
 
-        if(registed_count < 1)
-        {
+        if(registed_count < 1) {
           const insert_latlon_query = {
             name: 'insert-latlon',
             text: 'INSERT INTO location VALUES($1, $2, $3)',
@@ -140,8 +138,7 @@ app.post('/', upload.none(), (req, res) => {
           .catch(err => console.error('insert_latlon_query err:\n' + err.stack))
           .finally(pg_pool.end());
         }
-        else
-        {
+        else {
           const update_latlon_query = {
             name: 'update-latlon',
             text: 'UPDATE location SET lat = $2, lon = $3 WHERE id = $1',
@@ -159,8 +156,8 @@ app.post('/', upload.none(), (req, res) => {
       })()
       .catch(err => console.log('connect callback err:'  + err.stack));
     }
-  })
-})
+  });
+});
 
 
 const PORT = process.env.PORT || 1234;
