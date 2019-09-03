@@ -112,7 +112,6 @@ app.post('/', upload.none(), (req, res) => {
         await pg_pool
         .query(count_query)
         .then(result => {
-          console.log('count_query result:\n' + result);
           //registed_count = result.rows[0];
           registed_count = result.rowCount;
         })
@@ -130,7 +129,6 @@ app.post('/', upload.none(), (req, res) => {
           await pg_pool
           .query(insert_latlon_query)
           .then(result => {
-            console.log('insert_latlon_query result:\n' + result);
             res.send('登録成功');
           })
           .catch(err => console.error('insert_latlon_query err:\n' + err.stack));
@@ -144,7 +142,6 @@ app.post('/', upload.none(), (req, res) => {
           await pg_pool
           .query(update_latlon_query)
           .then(result => {
-            console.log('update_latlon_query result:\n' + result);
             res.send('更新成功');
           })
           .catch(err => console.error('update_latlon_query err:\n' + err.stack));
