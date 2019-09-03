@@ -118,7 +118,6 @@ app.post('/', upload.none(), (req, res) => {
         })
         .catch(err => {
           console.error('count_query err:\n' + err.stack);
-          pg_pool.end();
         });
         console.log('registed_count:' + registed_count);
 
