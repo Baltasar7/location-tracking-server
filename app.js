@@ -24,6 +24,7 @@ let pg_config =
   process.env.NODE_EXEC_PLACE === 'heroku' ?
   fs.readFileSync('./config_herokupg.json', 'utf-8') :
   fs.readFileSync('./config_localpg.json', 'utf-8');
+console.log(pg_config);
 
 
 app.get('/', (req, res) => {
@@ -120,5 +121,5 @@ app.post('/', upload.none(), (req, res) => {
 const PORT = process.env.PORT || 1234;
 let server = app.listen(PORT, () => {
   console.log('Listen...');
-  console.log(process.env.NODE_EXEC_PLACE);
-})
+  console.log('NODE_EXEC_PLACE=' + process.env.NODE_EXEC_PLACE);
+});
