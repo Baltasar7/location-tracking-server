@@ -102,18 +102,21 @@ app.post('/', upload.none(), (req, res) => {
     else {
       console.log('db connect success');
       
+      // Use async/await to arrange query execution order
       ;(async () => { 
         const registed_count = 0;
         const count_query = {
           name: 'count',
-          text: 'SELECT COUNT(*) FROM location WHERE id = $1',
+          //text: 'SELECT COUNT(*) FROM location WHERE id = $1',
+          text: 'SELECT * FROM location WHERE id = $1',
           values: [req.body.sign_up_id_number],
         };
         await pg_pool
         .query(count_query)
         .then(result => {
           console.log('count_query result:\n' + result);
-          registed_count = result.rows[0];
+          //registed_count = result.rows[0];
+          registed_count = result.rowCount;
         })
         .catch(err => {
           console.error('count_query err:\n' + err.stack);
