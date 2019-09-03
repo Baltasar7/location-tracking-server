@@ -155,7 +155,7 @@ app.post('/', upload.none(), (req, res) => {
         pg_pool.release();
         pg_pool.end();
       });
-  }
+    }
   })
 });
 
