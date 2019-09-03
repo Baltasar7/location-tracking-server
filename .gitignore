@@ -6,3 +6,9 @@ package-lock.json
 
 # DB Dump
 location_tracking_service.dump
+
+
+
+# Memo
+# === skip-woktree files ===
+# .env (Exec env discription)
