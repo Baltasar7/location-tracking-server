@@ -24,7 +24,6 @@ let pg_config =
   process.env.NODE_EXEC_PLACE === 'heroku' ?
   fs.readFileSync('./config_herokupg.json', 'utf-8') :
   fs.readFileSync('./config_localpg.json', 'utf-8');
-console.log(pg_config);
 
 
 app.get('/', (req, res) => {
@@ -111,7 +110,10 @@ app.post('/', upload.none(), (req, res) => {
       };
       pg_pool
       .query(count_query)
-      .then(result => registed_count = result.rows[0])
+      .then(result => {
+        registed_count = result.rows[0];
+        console.log('count_query result:\n' + result);
+      })
       .catch(err => {
         console.error(err.stack);
         pg_pool.end();
@@ -126,23 +128,29 @@ app.post('/', upload.none(), (req, res) => {
         };
         pg_pool
         .query(insert_latlon_query)
-        .then(result => res.send('登録成功'))
+        .then(result => {
+          res.send('登録成功');
+          console.log('insert_latlon_query result:\n' + result);
+        })
         .catch(err => console.error(err.stack))
         .finally(pg_pool.end());
-        }
-        else
-        {
-          const update_latlon_query = {
-            name: 'update-latlon',
-            text: 'UPDATE location SET lat = $2, lon = $3 WHERE id = $1',
-            values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
-          };
-          pg_pool
-          .query(update_latlon_query)
-          .then(result => res.send('更新成功'))
-          .catch(err => console.error(err.stack))
-          .finally(pg_pool.end());
-        }
+      }
+      else
+      {
+        const update_latlon_query = {
+          name: 'update-latlon',
+          text: 'UPDATE location SET lat = $2, lon = $3 WHERE id = $1',
+          values: [req.body.sign_up_id_number, req.body.sign_up_lat, req.body.sign_up_lon],
+        };
+        pg_pool
+        .query(update_latlon_query)
+        .then(result => {
+          res.send('更新成功');
+          console.log('update_latlon_query result:\n' + result);
+        })
+        .catch(err => console.error(err.stack))
+        .finally(pg_pool.end());
+      }
     }
   });
 })
