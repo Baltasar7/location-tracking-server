@@ -43,12 +43,15 @@ app.get('/', (req, res) => {
       }
       else {
         console.log('db connect success');
+
+      // Use async/await to arrange query execution order
+      ;(async () => {
         const fetch_latlon_query = {
           name: 'fetch-latlon',
           text: 'SELECT lat, lon FROM location WHERE id = $1',
           values: [req.query.search_id_number],
         }
-        pg_pool
+        await pg_pool
         .query(fetch_latlon_query)
         .then(result => {
           if(result.rowCount < 1) {
@@ -76,11 +79,13 @@ app.get('/', (req, res) => {
             });
           }
         })
-        .catch(err => console.error(err.stack))
-        .finally(() => {
-          pg_pool.release();
-          // pg_pool.end();
-        });
+        .catch(err => console.error(err.stack));
+      })()
+      .catch(err => console.log('query process err:'  + err.stack))
+      .finally(() => {
+        // pg_pool.release();
+        await pg_pool.end();
+      });
       }
     });
   }
@@ -153,7 +158,7 @@ app.post('/', upload.none(), (req, res) => {
       .catch(err => console.log('query process err:'  + err.stack))
       .finally(() => {
         // pg_pool.release();
-        pg_pool.end();
+        await pg_pool.end();
       });
     }
   })
