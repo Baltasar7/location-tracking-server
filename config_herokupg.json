@@ -1,8 +1,8 @@
 {
-  "database": "d97f1ck62lq4ko",
-  "user": "cxxsgxxqwfmkue",
-  "password": "2c959b327cb7eed7e43a4abac9c7545b9b01bbc262e79aac16f829f25ab0f952",
-  "host": "ec2-107-20-155-148.compute-1.amazonaws.com",
+  "database": "d77hj2f55osnng",
+  "user": "vmzldznzjimpzb",
+  "password": "f04e912d51caadb276ffcd36571e6d566204697382e63736b11ecb084f5cc56f",
+  "host": "ec2-54-221-238-248.compute-1.amazonaws.com",
   "port": "5432",
   "idleTimeoutMillis": "15000",
   "connectionTimeoutMillis": "15000",
