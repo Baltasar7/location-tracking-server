@@ -1,16 +1,16 @@
 'use strict'
 
 require('dotenv').config();
-let express = require('express');
-//let bodyParser = require('body-parser');
-let multer = require('multer');
-let pg = require('pg');
-let fs = require('fs');
+const express = require('express');
+//const bodyParser = require('body-parser');
+const multer = require('multer');
+const pg = require('pg');
+const fs = require('fs');
 
-let app = express();
-let upload = multer();
+const app = express();
+const upload = multer();
 
-let allowCrossDomain = (req, res, next) => {
+const allowCrossDomain = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'X-Requested-With');
   next();
@@ -20,7 +20,7 @@ app.use(allowCrossDomain);
 //   extended: true
 // }));
 
-let pg_config =
+const pg_config =
   process.env.NODE_EXEC_PLACE === 'heroku' ?
   fs.readFileSync('./config_herokupg.json', 'utf-8') :
   fs.readFileSync('./config_localpg.json', 'utf-8');
@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
     console.log('req.query.search_id_number is undefined...');
   }
   else {
-    let pg_pool = new pg.Pool(JSON.parse(pg_config));
+    const pg_pool = new pg.Pool(JSON.parse(pg_config));
     pg_pool.connect( err => {
       if(err) {
         console.log('db connect err:\n' + err);
@@ -106,7 +106,7 @@ app.post('/', upload.none(), (req, res) => {
   res.header('Content-Type', 'text/plain; charset=utf-8');
 //  res.send('登録成功');
 
-  let pg_pool = new pg.Pool(JSON.parse(pg_config));
+  const pg_pool = new pg.Pool(JSON.parse(pg_config));
   pg_pool.connect(err => {
     if(err) {
       console.log('db connect err:\n' + err);
@@ -178,7 +178,7 @@ app.post('/', upload.none(), (req, res) => {
 
 
 const PORT = process.env.PORT || 1234;
-let server = app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log('Listen...');
   console.log('NODE_EXEC_PLACE=' + process.env.NODE_EXEC_PLACE);
 });
