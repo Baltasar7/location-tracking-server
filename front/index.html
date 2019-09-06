@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocationTracking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>位置情報確認サイト（テスト用）</h1>
+
+  <hr>
+
+  <div class="sign_up_block">
+    <h2>登録する位置情報</h2>
+    <form id="sign_up_form">
+      <p>
+        <label for="sign_up_id_number">識別番号　　</label>
+        <input id="sign_up_id_number" type="text" name="sign_up_id_number" value="aaaaaa" required>
+      </p>
+      <p>
+        <label for="sign_up_lat">緯度（北緯）</label>
+        <input id="sign_up_lat" type="text" name="sign_up_lat" value="89.999" required>
+      </p>
+      <p>
+        <label for="sign_up_lon">経度（東経）</label>
+        <input id="sign_up_lon" type="text" name="sign_up_lon" value="179.999" required>
+      </p>
+      <button id="sign_up_button" type="button">登録</button>
+    </form>
+    <p id="sign_up_result">応答：</p>
+  </div>
+
+  <hr>
+
+  <div class="search_block">
+    <h2>検索した位置情報</h2>
+    <form id="search_form">
+      <p>
+        <label for="search_id_number">識別番号　　</label>
+        <input id="search_id_number" type="text" name="search_id_number" value="aaaaaa" required>
+      </p>
+      <button id="search_button" type="button">検索</button>
+    </form>
+    <p>
+      緯度（北緯）：
+      <span id="searched_lat">未検索</span>
+    </p>
+    <p>
+      経度（東経）：
+      <span id="searched_lon">未検索</span>
+    </p>
+    <p id="search_result">応答：</p>
+  </div>
+
+  <script src="location.js"></script>
+</body>
+</html>

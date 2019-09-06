@@ -25,6 +25,8 @@ const pg_config =
   fs.readFileSync('./config_herokupg.json', 'utf-8') :
   fs.readFileSync('./config_localpg.json', 'utf-8');
 
+const front_page = fs.readFileSync('./front/index.html', 'utf-8');
+
 
 app.get('/', (req, res) => {
   console.log('---GET Request---');
