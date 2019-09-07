@@ -87,7 +87,7 @@ app.get('/', (req, res) => {
             throw err;
           }
           finally {
-            // pg_pool.release();
+            pg_pool.release(true);
             await pg_pool.end();
           }
         })()
@@ -167,7 +167,7 @@ app.post('/', upload.none(), (req, res) => {
           throw err;
         }
         finally {
-          // pg_pool.release();
+          pg_pool.release(true);
           await pg_pool.end();
         }
       })()
