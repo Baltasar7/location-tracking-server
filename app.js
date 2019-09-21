@@ -37,62 +37,61 @@ app.get('/', (req, res) => {
   }
   else {
     const pg_pool = new pg.Pool(JSON.parse(pg_config));
-    pg_pool.connect( err => {
+    pg_pool.connect(err => {
       if(err) {
-        console.log('db connect err:\n' + err);
+        return console.log('db connect err:\n' + err);
       }
-      else {
-        console.log('db connect success');
+      console.log('db connect success');
 
-        // Use async/await to arrange query execution order
-        ;(async () => {
-          try {
-            const fetch_latlon_query = {
-              name: 'fetch-latlon',
-              text: 'SELECT lat, lon FROM location WHERE id = $1',
-              values: [req.query.search_id_number],
+      // Use async/await to arrange query execution order
+      ;(async () => {
+        try {
+          const fetch_latlon_query = {
+            name: 'fetch-latlon',
+            text: 'SELECT lat, lon FROM location WHERE id = $1',
+            values: [req.query.search_id_number],
+          }
+          await pg_pool
+          .query(fetch_latlon_query)
+          .then(result => {
+            if(result.rowCount < 1) {
+              console.log('id not registration');
+              res.json({
+                "search_result": "検索失敗（ID登録なし)",
+                "searched_lat": "undefined",
+                "searched_lon": "undefined",
+              });
             }
-            await pg_pool
-            .query(fetch_latlon_query)
-            .then(result => {
-              if(result.rowCount < 1) {
-                console.log('id not registration');
-                res.json({
-                  "search_result": "検索失敗（ID登録なし)",
-                  "searched_lat": "undefined",
-                  "searched_lon": "undefined",
-                });
-              }
-              else if (result.rowCount > 1) {
-                console.log('id multiple registration');
-                res.json({
-                  "search_result": "検索失敗（ID複数登録)",
-                  "searched_lat": "multiple registration",
-                  "searched_lon": "multiple registration",
-                });
-              }
-              else {
-                console.log('検索成功');
-                res.json({
-                  "search_result": "検索成功",
-                  "searched_lat": result.rows[0].lat,
-                  "searched_lon": result.rows[0].lon,
-                });
-              }
-            })
-            .catch(err => console.error(err.stack));
-          }
-          catch (err) {
-            console.log('query process err:'  + err.stack);
-            throw err;
-          }
-          finally {
-            pg_pool.release(true);
-            await pg_pool.end();
-          }
-        })()
-        .catch(err => console.log('async process err:'  + err.stack));
-      }
+            else if (result.rowCount > 1) {
+              console.log('id multiple registration');
+              res.json({
+                "search_result": "検索失敗（ID複数登録)",
+                "searched_lat": "multiple registration",
+                "searched_lon": "multiple registration",
+              });
+            }
+            else {
+              console.log('検索成功');
+              res.json({
+                "search_result": "検索成功",
+                "searched_lat": result.rows[0].lat,
+                "searched_lon": result.rows[0].lon,
+              });
+            }
+          })
+          .catch(err => console.error(err.stack));
+        }
+        catch (err) {
+          console.log('query process err:'  + err.stack);
+          throw err;
+        }
+        finally {
+          console.log('pg_pool.release(true)');
+          pg_pool.release(true);
+          await pg_pool.end();
+        }
+      })()
+      .catch(err => console.log('async process err:'  + err.stack));
     });
   }
 });
